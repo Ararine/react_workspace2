@@ -1,6 +1,14 @@
 import "./App.css";
 import React, { useEffect, useState } from "react"; //버전17 이후에는 jsx 사용하더라도 별도로 사용안해줘도 됨
 
+//사용자가 정의한 component들은 일반 component와 비교하기 위해 대문자로 시작한다.
+import Input from "./components/input2"; //.js는 확장자를 생략할 수 있다.
+import Todo from "./components/todo2";
+import { InputContext } from "./contexts/InputContext";
+import { TodoContext } from "./contexts/TodoContext";
+
+//상태전달 : Context API + useContext()
+//useContext : 상태관리 X, 부모의 정보를 자식에게 전달만 가능
 function App() {
   const wrap = {
     width: "500px",
@@ -52,40 +60,15 @@ function App() {
 
   return (
     <div className="App" style={wrap}>
-      <h1>TODO LIST</h1>
-      <form onSubmit={insertTodo}>
-        <input
-          type="text"
-          required={true}
-          value={input}
-          onChange={handleChangeText}
-        />
-        <input type="submit" value="Create" />
-      </form>
-      {todos
-        ? todos.map((todo) => {
-            return (
-              <div className="todo" key={todo.id}>
-                <h3>
-                  <label
-                    className={todo.completed ? "completed" : null}
-                    onClick={() => updateTodo(todo.id)}
-                  >
-                    {todo.todoname}
-                  </label>
+      <h1>TODO LIST2</h1>
 
-                  <label
-                    onClick={() => {
-                      deleteTodo(todo.id);
-                    }}
-                  >
-                    &nbsp;&nbsp;&nbsp;삭제
-                  </label>
-                </h3>
-              </div>
-            );
-          })
-        : null}
+      <InputContext.Provider value={{ input, insertTodo, handleChangeText }}>
+        <Input />
+      </InputContext.Provider>
+
+      <TodoContext.Provider value={{ todos, updateTodo, deleteTodo }}>
+        <Todo />
+      </TodoContext.Provider>
     </div>
   );
 }
